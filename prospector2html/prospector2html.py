@@ -80,17 +80,30 @@ class Prospector2HTML:
         result = []
         for item in x:
             try:
-                result.append({
-                    'tool': 'semgrep',
-                    'code': item['check_id'],
-                    'severity': item['extra']['severity'],
-                    'confidence': item['extra']['metadata']['confidence'],
-                    'function': 'unknown',
-                    'file': item['path'],
-                    'line': item['start']['line'],
-                    'position': item['start']['col'],
-                    'message': item['extra']['message']
-                })
+                if "confidence" in item['extra']['metadata']:
+                    result.append({
+                        'tool': 'semgrep',
+                        'code': item['check_id'],
+                        'severity': item['extra']['severity'],
+                        'confidence': item['extra']['metadata']['confidence'],
+                        'function': 'unknown',
+                        'file': item['path'],
+                        'line': item['start']['line'],
+                        'position': item['start']['col'],
+                        'message': item['extra']['message']
+                    })
+                else:
+                    result.append({
+                        'tool': 'semgrep',
+                        'code': item['check_id'],
+                        'severity': item['extra']['severity'],
+                        'confidence': 'unknown',
+                        'function': 'unknown',
+                        'file': item['path'],
+                        'line': item['start']['line'],
+                        'position': item['start']['col'],
+                        'message': item['extra']['message']
+                    })
             except KeyError as e:
                 print("ERROR: Can't normalize semgrep item: ", str(e), " is absent.")
 
